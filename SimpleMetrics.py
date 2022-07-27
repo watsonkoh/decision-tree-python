@@ -2,10 +2,21 @@
 # Copyright Varun Shenoy, 6/23/17
 
 import numpy as np
+import pandas as pd
+
+#tab = pd.crosstab(actual, prediction)
+#     Predicted ( 0 , 1 )
+#  actual ( 0 )   TN  FP
+#  actual ( 1 )   FN  TP
+#
 
 # precision is the specificity
 # "Specificity relates to the test's ability to correctly detect patients without a condition."
 def precision(actual, prediction):
+    tab = pd.crosstab(actual, prediction)
+    return tab.iloc[1,1] / (tab.iloc[0,1] + tab.iloc[1,1])
+
+def precision1(actual, prediction):
     fp = 0.
     tp = 0.
     for (index, val) in enumerate(actual):
@@ -21,6 +32,10 @@ def precision(actual, prediction):
 # recall is the sensitivity
 # "Sensitivity refers to the test's ability to correctly detect patients who do have the condition."
 def recall(actual, prediction):
+    tab = pd.crosstab(actual, prediction)
+    return tab.iloc[1,1] / (tab.iloc[1,0] + tab.iloc[1,1])
+
+def recall1(actual, prediction):
     fn = 0.
     tp = 0.
     for (index, val) in enumerate(actual):

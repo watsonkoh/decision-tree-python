@@ -7,6 +7,7 @@ import numpy as np
 # Quick value count calculator
 from collections import Counter
 
+import SimpleMetrics 
 
 class Node: 
     """
@@ -283,6 +284,12 @@ class Node:
             if cur_node.n < cur_node.min_samples_split:
                 break 
 
+            if values.get(best_feature) is None:
+                break
+
+            if best_value is None:
+                break
+
             if (values.get(best_feature) < best_value):
                 if self.left is not None:
                     cur_node = cur_node.left
@@ -294,22 +301,34 @@ class Node:
         
 if __name__ == '__main__':
     # Reading data
-    d = pd.read_csv("data/classification/train.csv")[['Age', 'Fare', 'Survived']].dropna()
+    d = pd.read_csv("data/classification/malware.csv")[['classification','binderTotalNodes', 'binderTotalDeath', 'binderTransaction', 'permissions']].dropna()
 
+    train=d.sample(frac=0.8,random_state=200) #random state is a seed value
+    test=d.drop(train.index)
+
+    print("Training Size ", len(train))
+    print("Testing Size ", len(test))
+    
     # Constructing the X and Y matrices
-    X = d[['Age', 'Fare']]
-    Y = d['Survived'].values.tolist()
+    X = train[['binderTotalNodes', 'binderTotalDeath', 'binderTransaction', 'permissions']]
+    Y = train['classification'].values.tolist()
 
     # Initiating the Node
     root = Node(Y, X, max_depth=3, min_samples_split=100)
 
-    # Getting teh best split
+    # Getting the best split
     root.grow_tree()
 
     # Printing the tree information 
     root.print_tree()
 
-    # Predicting 
-    Xsubset = X.copy()
-    Xsubset['yhat'] = root.predict(Xsubset)
-    print(Xsubset)
+    # Predicting
+    Z = test[['binderTotalNodes', 'binderTotalDeath', 'binderTransaction', 'permissions']]
+    Y_Test = test['classification'].values.tolist()
+    Y_Predicted = root.predict(Z)
+    Z['classification'] = Y_Predicted
+    #print(Z)
+
+    print("Accuracy ", SimpleMetrics.accuracy(Y_Test,Y_Predicted))
+    print("Precision ", SimpleMetrics.precision(Y_Test,Y_Predicted))
+    print("Recall ", SimpleMetrics.recall(Y_Test,Y_Predicted))
