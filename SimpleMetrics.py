@@ -33,6 +33,7 @@ def precision1(actual, prediction):
 # "Sensitivity refers to the test's ability to correctly detect patients who do have the condition."
 def recall(actual, prediction):
     tab = pd.crosstab(actual, prediction)
+    print(tab)
     return tab.iloc[1,1] / (tab.iloc[1,0] + tab.iloc[1,1])
 
 def recall1(actual, prediction):
