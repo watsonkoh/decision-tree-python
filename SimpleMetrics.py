@@ -8,7 +8,6 @@ import pandas as pd
 #     Predicted ( 0 , 1 )
 #  actual ( 0 )   TN  FP
 #  actual ( 1 )   FN  TP
-#
 
 # precision is the specificity
 # "Specificity relates to the test's ability to correctly detect patients without a condition."
